@@ -1,0 +1,24 @@
+serialPort(ttyUSB0).
+
+!start.
+
++!start:
+serialPort(Port) <- 
+	.print("Sensor Ativado");
+	.port(Port);
+	.percepts(open);
+	.limit(1000).
+
++port(Port,Status):
+Status = off | Status = timeout <-
+	.percepts(close);
+	.print("Sensor Desligado").
+
++fumaca(F): F = 0 <-
+	.act(aviso);
+	.send(casa,achieve,perigo);
+	.print("Emergência! Casa pegando fogo!").
+
++fumaca(F): F = 1 <-
+	.act(standby);
+	.print("Em standby").
