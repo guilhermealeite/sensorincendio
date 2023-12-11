@@ -1,0 +1,25 @@
+/* To generate a random UUID use https://www.uuidgenerator.net/ */
+casaUUID("efa435a4-42f5-4927-8d4b-2c77ce9e8eed").
+bombeiroUUID("bcb38a40-8605-4f07-a94a-d96678498165").
+
+/* We provide a Public IoT Gateway, more info in https://doi.org/10.5753/wei.2023.229753 */
+gateway("192.168.67.26",5500).  
+
+!ligar.
+
+
+/* planos */
+
++!ligar:gateway(Server,Port) & casaUUID(MyID)  <- 
+	?bombeiroUUID(BombeiroUUID);
+	.print("ligando para bombeiro ",Server,":",Port);
+	.connectCN(Server,Port,MyID);
+	.sendOut(BombeiroUUID,achieve,configurar).
+	
++!aviso(M)[source(Who)]<-
+	.print(M).
+
+
++!perigo[source(Who)]: bombeiroUUID(Valor) <-
+	?bombeiroUUID(Valor);
+	.sendOut(Valor,achieve,alerta("Casa pegando fogo! Urgência!")).
