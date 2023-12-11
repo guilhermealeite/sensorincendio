@@ -1,0 +1,20 @@
+myUUID("bcb38a40-8605-4f07-a94a-d96678498165").
+casaUUID("efa435a4-42f5-4927-8d4b-2c77ce9e8eed").
+prefeituraUUID("5cff1f03-bb96-4412-b826-3c5ee41cda45").
+gateway("192.168.67.26",5500).
+
+!connect.
+
++!connect: gateway(Server,Port) & myUUID(MyID) <- 
+	.print("Serviço de Bombeiros Online!");
+	.connectCN(Server,Port,MyID).
+
++!configurar[source(Who)]<-
+	.sendOut(Who,achieve,aviso("Configuração realizada!")).
+
++!alerta(M)[source(Who)]: prefeituraUUID(X)<-
+	.print(M);
+	.sendOut(X,achieve,incendio("Casa pegando fogo!")).
+	
++!semaforo(M)[source(Who)]: casaUUID(X)<-
+	.print(M).
