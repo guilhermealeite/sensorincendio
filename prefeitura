@@ -1,0 +1,16 @@
+/* To generate a random UUID use https://www.uuidgenerator.net/ */
+myUUID("5cff1f03-bb96-4412-b826-3c5ee41cda45").
+bombeiroUUID("bcb38a40-8605-4f07-a94a-d96678498165").
+
+/* We provide a Public IoT Gateway, more info in https://doi.org/10.5753/wei.2023.229753 */
+gateway("192.168.67.26",5500).  
+		
+!connect.
+
++!connect: gateway(Server,Port) & myUUID(MyID) <-
+	.print("Serviço da Prefeitura Online!");
+	.connectCN(Server, Port, MyID).
+
++!incendio(M)[source(Who)]<-
+	.print(M);
+	.sendOut(Who,achieve,semaforo("Semáforos 1 e 2, sentido a Olaria liberados.")).
