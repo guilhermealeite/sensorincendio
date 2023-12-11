@@ -1,0 +1,65 @@
+#include <Javino.h>
+#include <DHT12.h>
+
+Javino javino;
+DHT12 dht12(4, true);
+
+const int pinoSensorT = 4; //PINO UTILIZADO PELO SENSOR DE TEMPERATURA
+int valorLido; //VARIÁVEL QUE ARMAZENA O VALOR DA TEMPERATURA
+const int pinoLedV = 5; // PINO DIGITAL UTILIZADO PELO LED VERMELHO
+const int pinoLedG = 3; // PINO DIGITAL UTILIZADO PELO LED VERDE
+const int pinoSensorF = 2; // PINO DIGITAL UTILIZADO PELO SENSOR DE FUMAÇA
+const int pinoBuzzer = 7; // PINO BUZZER
+int fumaca;
+int temperatura;
+int condicao = 0;
+
+void setup() {
+
+javino.act["aviso"]  = aviso;
+javino.act["standby"] = standby;
+javino.perceive(getExogenousPerceptions);
+javino.start(9600);
+
+ ///////////////////////////////
+
+ pinMode(pinoSensorT, INPUT); // DEFINE O PINO COMO ENTRADA
+ pinMode(pinoSensorF, INPUT); // DEFINE O PINO COMO ENTRADA
+ pinMode(pinoBuzzer, OUTPUT); //DEFINE O PINO COMO SAÍDA
+ pinMode(pinoLedV, OUTPUT); // DEFINE O PINO COMO SAÍDA
+ pinMode(pinoLedG, OUTPUT); // DEFINE O PINO COMO SAÍDA
+ digitalWrite(pinoLedV, LOW); // LED VERMELHO INICIA DESLIGADO
+ digitalWrite(pinoLedG, HIGH); // LED VERDE INICIA LIGADO
+ 
+
+}
+
+void loop() {
+    float t12 = dht12.readTemperature();
+  javino.run();
+}
+
+void serialEvent(){
+  javino.readSerial();
+}
+
+void getExogenousPerceptions(){
+   //fumaça
+  javino.addPercept("fumaca("+String(digitalRead(2))+")");
+  
+  //temperatura
+  javino.addPercept("temperatura("+String(dht12.readTemperature())+")");
+
+}
+
+void aviso(){
+  digitalWrite(5,HIGH);
+  digitalWrite(3,LOW); 
+  digitalWrite(7,HIGH);
+}
+
+void standby(){
+  digitalWrite(5,LOW);
+  digitalWrite(3,HIGH); 
+  digitalWrite(7,LOW);
+}
